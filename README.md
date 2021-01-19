@@ -1,6 +1,6 @@
-Hackers do Instagram: rastreie os que não seguem os seguidores, aumente seus seguidores, baixe histórias, etc.
 
-# Característicos:
+
+# Características:
 
 ```
 Unfollow Tracker
