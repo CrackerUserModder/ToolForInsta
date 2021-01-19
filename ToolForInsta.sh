@@ -36,13 +36,13 @@ login_user() {
 
 
 if [[ $user == "" ]]; then
-printf "\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Login\e[0m\n"
-read -p $'\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Username: \e[0m' user
+printf "\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Conecte-se\e[0m\n"
+read -p $'\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Nome do usuário: \e[0m' user
 fi
 
 if [[ -e cookie.$user ]]; then
 
-printf "\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Cookies found for user\e[0m\e[1;77m %s\e[0m\n" $user
+printf "\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Cookies encontrados para o usuário\e[0m\e[1;77m %s\e[0m\n" $user
 
 default_use_cookie="Y"
 
@@ -51,7 +51,7 @@ read -p $'\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Use it?\e[0m\e[1;77
 use_cookie="${use_cookie:-${default_use_cookie}}"
 
 if [[ $use_cookie == *'Y'* || $use_cookie == *'y'* ]]; then
-printf "\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Using saved credentials\e[0m\n"
+printf "\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Usando credenciais salvas\e[0m\n"
 else
 rm -rf cookie.$user
 login_user
@@ -60,7 +60,7 @@ fi
 
 else
 
-read -s -p $'\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Password: \e[0m' pass
+read -s -p $'\e[1;31m[\e[0m\e[1;77m*\e[0m\e[1;31m]\e[0m\e[1;93m Senha: \e[0m' pass
 printf "\n"
 data='{"phone_id":"'$phone'", "_csrftoken":"'$var2'", "username":"'$user'", "guid":"'$guid'", "device_id":"'$device'", "password":"'$pass'", "login_attempt_count":"0"}'
 
@@ -69,10 +69,10 @@ IFS=$'\n'
 hmac=$(echo -n "$data" | openssl dgst -sha256 -hmac "${ig_sig}" | cut -d " " -f2)
 useragent='User-Agent: "Instagram 10.26.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)"'
 
-printf "\e[1;77m[\e[0m\e[1;92m+\e[0m\e[1;77m] Trying to login as\e[0m\e[1;93m %s\e[0m\n" $user
+printf "\e[1;77m[\e[0m\e[1;92m+\e[0m\e[1;77m] Tentando fazer o login como\e[0m\e[1;93m %s\e[0m\n" $user
 IFS=$'\n'
 var=$(curl -c cookie.$user -d "ig_sig_key_version=4&signed_body=$hmac.$data" -s --user-agent 'User-Agent: "Instagram 10.26.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)"' -w "\n%{http_code}\n" -H "$header" "https://i.instagram.com/api/v1/accounts/login/" | grep -o "logged_in_user\|challenge\|many tries\|Please wait" | uniq ); 
-if [[ $var == "challenge" ]]; then printf "\e[1;93m\n[!] Challenge required\n" ; exit 1; elif [[ $var == "logged_in_user" ]]; then printf "\e[1;92m \n[+] Login Successful\n" ; elif [[ $var == "Please wait" ]]; then echo "Please wait"; fi; 
+if [[ $var == "challenge" ]]; then printf "\e[1;93m\n[!] Challenge required\n" ; exit 1; elif [[ $var == "logged_in_user" ]]; then printf "\e[1;92m \n[+] Login bem sucedido\n" ; elif [[ $var == "Please wait" ]]; then echo "Please wait"; fi; 
 
 fi
 
@@ -83,7 +83,7 @@ get_saved() {
 user_account=$user
 user_id=$(curl -L -s 'https://www.instagram.com/'$user_account'' > getid && grep -o  'profilePage_[0-9]*.' getid | cut -d "_" -f2 | tr -d '"')
 
-printf "\e[1;77m[\e[0m\e[1;92m+\e[0m\e[1;77m] Generating image list\n"
+printf "\e[1;77m[\e[0m\e[1;92m+\e[0m\e[1;77m] Gerando lista de imagens\n"
 curl -L -b cookie.$user -s --user-agent 'User-Agent: "Instagram 10.26.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)"' -w "\n%{http_code}\n" -H "$header" "https://i.instagram.com/api/v1/feed/saved" > $user_account.saved_ig
 
 cp $user_account.saved_ig $user_account.saved_ig.00
@@ -120,16 +120,16 @@ mkdir -p $user/images
 fi
 tot_img=$(wc -l links | cut -d " " -f1)
 count_img=0
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total images:\e[0m\e[1;93m %s\e[0m \n" $tot_img
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total de imagens:\e[0m\e[1;93m %s\e[0m \n" $tot_img
 
 for img in $(cat links); do
 
 let count_img++
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Downloading image\e[0m\e[1;93m %s/%s\e[0m " $count_img $tot_img
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Baixando imagem\e[0m\e[1;93m %s/%s\e[0m " $count_img $tot_img
 wget $img -O $user/images/image$count_img.jpg > /dev/null 2>&1
 printf "\e[1;92mDONE!\n\e[0m"
 done
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Saved:\e[0m\e[1;93m %s/images/\e[0m\n" $user
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Salvou:\e[0m\e[1;93m %s/images/\e[0m\n" $user
 
 cat $user_account.saved_ig.* > $user_account.raw_saved
 grep -o 'https://[^ ]*.mp4[^\ ]*.' $user_account.raw_saved | cut -d '"' -f1 | tr -d '\\' | uniq > vid_$user  
@@ -139,15 +139,15 @@ if [[ ! -d $user/videos ]]; then
 mkdir -p $user/videos
 fi
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total Videos:\e[0m\e[1;93m %s\e[0m\n" $tot_vid
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total de vídeos:\e[0m\e[1;93m %s\e[0m\n" $tot_vid
 for link in $(cat vid_$user); do
 let count++
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Downloading video\e[0m\e[1;93m %s/%s\e[0m " $count $tot_vid
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Baixando vídeo\e[0m\e[1;93m %s/%s\e[0m " $count $tot_vid
 printf "\e[1;92mDONE!\n\e[0m"
 wget $link -O $user/videos/video$count.mp4 > /dev/null 2>&1
 done
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Saved:\e[0m\e[1;93m %s/videos/\e[0m\n" $user 
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Salvou:\e[0m\e[1;93m %s/videos/\e[0m\n" $user 
 
 
 }
@@ -184,8 +184,8 @@ cat $user_account.following_temp | uniq > $user_account.following_backup
 rm -rf $user_account.following_temp
 
 tot_following=$(wc -l $user_account.following_backup | cut -d " " -f1)
-printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Total Following:\e[0m\e[1;77m %s\e[0m\n" $tot_following
-printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Saved:\e[0m\e[1;77m %s.following_backup\e[0m\n" $user_account
+printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Total de Seguintes:\e[0m\e[1;77m %s\e[0m\n" $tot_following
+printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Salvou:\e[0m\e[1;77m %s.following_backup\e[0m\n" $user_account
 
 
 if [[ ! -d $user_account/raw_following/ ]]; then
@@ -207,8 +207,8 @@ done
 
 total_followers() {
 
-printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Creating followers list for user\e[0m \e[1;77m%s\e[0m\n" $user_account
-printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Please wait...\e[0m\n"
+printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Criando lista de seguidores para o usuário\e[0m \e[1;77m%s\e[0m\n" $user_account
+printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Por favor, espere...\e[0m\n"
 
 
 user_id=$(curl -L -s 'https://www.instagram.com/'$user_account'' > getid && grep -o  'profilePage_[0-9]*.' getid | cut -d "_" -f2 | tr -d '"')
@@ -238,8 +238,8 @@ else
 grep -o 'username": "[^ ]*.' $user_account.followers.* | cut -d " " -f2 | tr -d '"' | tr -d ',' > $user_account.followers_backup
 
 tot_follow=$(wc -l $user_account.followers_backup | cut -d " " -f1)
-printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Total Followers:\e[0m\e[1;77m %s\e[0m\n" $tot_follow
-printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Saved:\e[0m\e[1;77m %s.followers_backup\e[0m\n" $user_account
+printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Total de seguidores:\e[0m\e[1;77m %s\e[0m\n" $tot_follow
+printf "\e[1;31m[\e[0m\e[1;77m+\e[0m\e[1;31m]\e[0m\e[1;93m Salvou:\e[0m\e[1;77m %s.followers_backup\e[0m\n" $user_account
 if [[ $user == $user_account ]]; then
 
 if [[ ! -d $user/raw_followers/ ]]; then
@@ -294,34 +294,34 @@ if [[ ! -d $user_account/story/ ]]; then
 mkdir -p $user_account/story/
 fi
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total Video Stories:\e[0m\e[1;93m %s\e[0m\n" $tot_vid
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total de histórias de vídeo:\e[0m\e[1;93m %s\e[0m\n" $tot_vid
 IFS=$'\n'
 
 #Story videos
 for link in $(cat $user_account.story_videos); do
 let count++
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Downloading Story Video\e[0m\e[1;93m %s/%s\e[0m " $count $tot_vid
-printf "\e[1;92mDONE!\n\e[0m"
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Baixando o vídeo da história\e[0m\e[1;93m %s/%s\e[0m " $count $tot_vid
+printf "\e[1;92mFEITO!\n\e[0m"
 IFS=$'\n'
 wget $link -O $user_account/story/story$count.mp4 > /dev/null 2>&1
 done
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Saved:\e[0m\e[1;93m %s/story/\e[0m\n" $user_account
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Salvou:\e[0m\e[1;93m %s/story/\e[0m\n" $user_account
 
 #Story Image
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total Image Stories:\e[0m\e[1;93m %s\e[0m\n" $tot_img
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Total de histórias de imagens:\e[0m\e[1;93m %s\e[0m\n" $tot_img
 
 for link2 in $(cat $user_account.story_images); do
 let count2++
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Downloading Story Image\e[0m\e[1;93m %s/%s\e[0m " $count2 $tot_img
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Baixando imagem da história\e[0m\e[1;93m %s/%s\e[0m " $count2 $tot_img
 printf "\e[1;92mDONE!\n\e[0m"
 IFS=$'\n'
 wget $link2 -O $user_account/story/story$count2.jpg > /dev/null 2>&1
 done
 
-printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Saved:\e[0m\e[1;93m %s/story/\e[0m\n" $user_account
+printf "\e[1;77m[\e[0m\e[1;31m+\e[0m\e[1;77m] Salvou:\e[0m\e[1;93m %s/story/\e[0m\n" $user_account
 
 
 
