@@ -1,10 +1,7 @@
 #!/bin/bash
-# Inshackle v1.0
-# published by @xd20111 
-# IG @xd_20111
-# coded by: @linux_choice
-# github.com/thelinuxchoice/inshackle
-# If you use any part from this code, give me the credits, please, read the License
+# ToolForInsta v5.5
+# IG @satanic.modder
+# Se você usar qualquer parte deste código, dê-me os créditos, por favor, leia a Licença
 
 
 string4=$(openssl rand -hex 32 | cut -c 1-4)
@@ -428,6 +425,7 @@ jelopez="305701719"
 messi="427553890"
 
 dualipa="12331195"
+satanic.modder"40198271842"
 mileycyrus="325734299"
 shawnmendes="212742998"
 katyperry="407964088"
