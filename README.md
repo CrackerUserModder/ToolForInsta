@@ -16,7 +16,7 @@ Unfollow all your following
 
 # Dependencias:
 ```
-git clone https://github.com/xd20111/inshackle
-cd inshackle
-bash inshackle.sh
+git clone https://github.com/CrackerUserModder/ToolForInsta
+cd ToolForInsta
+bash ToolForInsta.sh
 ```
